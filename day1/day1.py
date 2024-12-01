@@ -1,3 +1,6 @@
+from collections import Counter
+
+
 def read_input():
     left, right = [], []
     with open('input.txt') as f:
@@ -22,6 +25,16 @@ def calc_total_distance(left_list, right_list):
     return total_distance
 
 
+def calc_similarity_score(left_list, right_list):
+    right_counts = Counter(right_list)
+
+    similarity = 0
+    for value in left_list:
+        similarity += value * right_counts[value]
+
+    return similarity
+
+
 print('Reading input.txt into two lists...')
 left_list, right_list = read_input()
 
@@ -29,3 +42,7 @@ print('Calculating total distance between lists...')
 total_distance = calc_total_distance(left_list, right_list)
 
 print(f'Total distance between lists: {total_distance}')
+
+print('Calculating similarity score...')
+similarity = calc_similarity_score(left_list, right_list)
+print(f'Similarity score: {similarity}')
