@@ -22,6 +22,24 @@ def is_safe(report):
     return True
 
 
+def is_safe_with_dampener(report):
+    increasing = (report[0] - report[1]) < 0
+    safe = is_safe(report)
+
+    if safe:
+        return safe
+
+    damped_reports = []
+    for i in range(len(report)):
+        damped_report = []
+        for j, level in enumerate(report):
+            if i != j:
+                damped_report.append(level)
+        damped_reports.append(damped_report)
+
+    return any([is_safe(x) for x in damped_reports])
+
+
 def all_inc_or_all_dec(curr, nxt, increasing):
     if increasing: 
         if curr > nxt:
@@ -47,10 +65,20 @@ def count_safe(reports):
     return total_safe
 
 
+def count_safe_with_dampener(reports):
+    total_safe = 0
+    for report in reports:
+        if is_safe_with_dampener(report):
+            total_safe += 1
+    return total_safe
+
+
 def main():
     reports = read_input()
     total_safe = count_safe(reports)
+    total_safe_with_dampener = count_safe_with_dampener(reports)
     print(f'Number of safe reports: {total_safe}')
+    print(f'Number of safe reports with dampener: {total_safe_with_dampener}')
 
 
 if __name__ == "__main__":
