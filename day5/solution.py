@@ -1,10 +1,10 @@
 from collections import defaultdict
 
 
-def read_input():
+def read_input(filename='input.txt'):
     ordering_rules = defaultdict(set)
     updates = None
-    with open('input.txt') as f:
+    with open(filename) as f:
         lines = f.readlines()
 
         i = 0
@@ -14,7 +14,7 @@ def read_input():
             i += 1
 
         updates = lines[i+1:]
-    
+
     for i, upd in enumerate(updates):
         updates[i] = [int(x) for x in upd.split(',')]
 
@@ -44,22 +44,39 @@ def mid_sum(updates):
     return mid_sum
 
 
+def direct_sort(ord_rules, update):
+    swaps = float('inf')
+    while swaps != 0:
+        swaps = 0
+        i = 0
+        while i < len(update) - 1:
+            must_be_after = ord_rules[update[i+1]]
+            if update[i] in must_be_after:
+                swaps += 1
+                update[i], update[i+1] = update[i+1], update[i]
+            i += 1
 
-def task_one(ord_rules, updates):
-    valid_updates = [ update for update in updates if is_update_valid(ord_rules, update)]
-    return mid_sum(valid_updates)
-
-def task_two(input):
-    return 0
+    return update
 
 
 def main():
     ord_rules, updates = read_input()
 
-    res = task_one(ord_rules, updates)
-    print(f'Task one: {res}')
-    # res = task_two(data)
-    # print(f'Task two: {res}')
+    valid_updates = []
+    invalid_updates = []
+    for upd in updates:
+        if is_update_valid(ord_rules, upd):
+            valid_updates.append(upd)
+        else:
+            invalid_updates.append(upd)
+
+    mid_sum_of_valid = mid_sum(valid_updates)
+
+    fixed_updates = [direct_sort(ord_rules, upd) for upd in invalid_updates]
+    mid_sum_of_fixed = mid_sum(fixed_updates)
+
+    print(f'Task one (mid sum of valid): {mid_sum_of_valid}')
+    print(f'Task two (mid sum of fixed): {mid_sum_of_fixed}')
 
 
 if __name__ == "__main__":
