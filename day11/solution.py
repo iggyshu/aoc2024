@@ -30,13 +30,16 @@ def blink(stones: List[int], times: int) -> List[int]:
         for value in S:
             new_stones.extend(process_stone(value))
         S = new_stones
+        # if len(S) > 1000000: break up into batches, process each batch individually
     return S
 
 
 def main():
+    res = 0
     stones = read_input()
-    stones = blink(stones, 25)
-    print(len(stones))
+    for stone in stones:
+        res += len(blink([stone], 25))
+    print(res)
 
 
 if __name__ == "__main__":
