@@ -78,11 +78,57 @@ def trailhead_scores(
     return [trailhead_score(grid, trailhead) for trailhead in trailheads]
 
 
+def trailhead_score_DFS(grid: List[List[str]], trailhead: Tuple[int, int]) -> int:
+    def in_bounds(node):
+        row, col = node
+        return row >= 0 and col >= 0 and row < len(grid) and col < len(grid[0])
+
+    def is_gradual(node, next_node):
+        return int(grid[next_node[0]][next_node[1]]) - int(grid[node[0]][node[1]]) == 1
+
+    def is_peak(node):
+        return grid[node[0]][node[1]] == "9"
+
+    visited = set()
+    score = [0]
+
+    def descend(node, visited):
+        if is_peak(node):
+            score[0] += 1
+        else:
+            visited.add(node)
+            up = (node[0] - 1, node[1])
+            left = (node[0], node[1] - 1)
+            right = (node[0], node[1] + 1)
+            down = (node[0] + 1, node[1])
+            neighbor_nodes = [up, left, right, down]
+
+            for neighbor in neighbor_nodes:
+                if (
+                    in_bounds(neighbor)
+                    and (neighbor not in visited)
+                    and is_gradual(node, neighbor)
+                ):
+                    descend(neighbor, set(visited))
+
+    descend(trailhead, visited)
+
+    return score[0]
+
+
+def trailhead_scores_DFS(
+    grid: List[List[str]], trailheads: List[Tuple[int, int]]
+) -> List[int]:
+    return [trailhead_score_DFS(grid, trailhead) for trailhead in trailheads]
+
+
 def main():
     grid = read_grid()
     trailheads = find_trailheads(grid)
     scores = trailhead_scores(grid, trailheads)
-    print(sum(scores))
+    print("Original score: " + str(sum(scores)))
+    updated_scores = trailhead_scores_DFS(grid, trailheads)
+    print("Updated score: " + str(sum(updated_scores)))
 
 
 if __name__ == "__main__":
