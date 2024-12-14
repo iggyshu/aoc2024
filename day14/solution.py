@@ -1,4 +1,6 @@
 from typing import List, Tuple
+import os
+import time
 
 
 class Robot:
@@ -49,7 +51,9 @@ def read_robots(gridsize: Tuple[int, int], filename: str = "input.txt") -> List[
 
 
 def print_grid(robots, X, Y):
+    os.system("clear")
     print("==================================")
+    grid = []
     for i in range(Y):
         counts = []
         for j in range(X):
@@ -60,32 +64,41 @@ def print_grid(robots, X, Y):
             counts.append(str(count))
             if counts[-1] == "0":
                 counts[-1] = "."
-        print(" ".join(counts))
-    print("==================================")
+        grid.append("".join(counts))
+
+    for row in grid:
+        print(row)
+
+    time.sleep(1)
 
 
-def safety_rating(robots: List[Robot], gridsize: Tuple[int, int], seconds: int):
+def safety_rating(
+    robots: List[Robot], gridsize: Tuple[int, int], seconds: int, debug: bool = True
+):
     X, Y = gridsize
 
     up_left = (0, 0), (X // 2 - 1, Y // 2 - 1)
     up_right = (X // 2 + 1, 0), (X - 1, Y // 2 - 1)
-    down_left = (0, Y // 2 + 1), (X // 2 - 4, Y - 1)
+    down_left = (0, Y // 2 + 1), (X // 2 - 1, Y - 1)
     down_right = (X // 2 + 1, Y // 2 + 1), (X - 1, Y - 1)
     quadrants = [up_left, up_right, down_left, down_right]
 
-    print_grid(robots, X, Y)
+    if debug:
+        print_grid(robots, X, Y)
     for _ in range(seconds):
         for robot in robots:
             robot.move(1)
-        print_grid(robots, X, Y)
+        if debug:
+            print_grid(robots, X, Y)
 
-    print()
-    print("Quadrants:")
-    for q in quadrants:
-        print(q)
+    if debug:
+        print()
+        print("Quadrants:")
+        for q in quadrants:
+            print(q)
 
-    for robot in robots:
-        print(robot)
+        for robot in robots:
+            print(robot)
 
     robots_quadrants = []
     for q in quadrants:
@@ -95,16 +108,22 @@ def safety_rating(robots: List[Robot], gridsize: Tuple[int, int], seconds: int):
                 res += 1
         robots_quadrants.append(res)
 
-    print("Robots in quadrants:")
-    print(robots_quadrants)
+    if debug:
+        print("Robots in quadrants:")
+        print(robots_quadrants)
 
-    rating = sum(robots_quadrants)
-    print(f"Safety rating: {rating}")
+    rating = 1
+    for q in robots_quadrants:
+        rating *= q
+    if debug:
+        print(f"Safety rating: {rating}")
     return rating
 
 
 def main():
-    pass
+    gridsize = (101, 103)
+    robots = read_robots(gridsize, "input.txt")
+    safety_rating(robots, gridsize, 100)
 
 
 if __name__ == "__main__":
