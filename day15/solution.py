@@ -98,12 +98,20 @@ class Solution:
                     res += y * 100 + x
         return res
 
+    def print_grid(self):
+        print("\033[H\033[3J", end="")
+        for row in self._grid:
+            print("".join(row))
+
 
 def main():
     solution = Solution(input_filename="input.txt")
     robot = solution.find_robot()
+    solution.print_grid()
     for direction in solution._moves:
         robot = solution.move_robot(robot, direction)
+        solution.print_grid()
+    print()
     print(solution.get_box_coordinates())
 
 
