@@ -90,9 +90,21 @@ class Solution:
         else:
             raise ValueError("Something is wrong with adj cell! - Robot")
 
+    def get_box_coordinates(self):
+        res = 0
+        for y, row in enumerate(self._grid):
+            for x, cell in enumerate(row):
+                if cell == "O":
+                    res += y * 100 + x
+        return res
+
 
 def main():
-    pass
+    solution = Solution(input_filename="input.txt")
+    robot = solution.find_robot()
+    for direction in solution._moves:
+        robot = solution.move_robot(robot, direction)
+    print(solution.get_box_coordinates())
 
 
 if __name__ == "__main__":

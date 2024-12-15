@@ -41,3 +41,11 @@ def test_move_robot():
         "#OO....OO#",
         "##########",
     ]
+
+
+def test_coordintates():
+    solution = Solution(input_filename="test_input.txt")
+    robot = solution.find_robot()
+    for direction in solution._moves:
+        robot = solution.move_robot(robot, direction)
+    assert solution.get_box_coordinates() == 10092
