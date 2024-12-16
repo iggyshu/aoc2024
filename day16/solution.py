@@ -1,5 +1,6 @@
 from typing import List, Tuple
 from collections import deque
+from heapq import heapify, heappop, heappush
 
 
 class Solution:
@@ -45,30 +46,27 @@ class Solution:
             else:
                 return 1
 
-        def search(pos, path, score) -> int:
-            score += keep_score(path)
+        visited = set()
+        frontier = [(0, self._deer, [(self._deer[0], self._deer[1] - 1), self._deer])]
+        heapify(frontier)
+        while len(frontier) > 0:
+            score, pos, path = heappop(frontier)
+            visited.add(pos)
 
             if is_end(pos):
-                print("REACHED END")
                 print(path)
-                print(score)
                 return score
             else:
                 y, x = pos
-                left = (y, x - 1)
-                right = (y, x + 1)
-                up = (y - 1, x)
-                down = (y + 1, x)
+                adjacent = [(y, x - 1), (y, x + 1), (y - 1, x), (y + 1, x)]
 
-                scores = [float("inf")]
+                for adj in adjacent:
+                    if not is_wall(adj) and adj not in visited:
+                        new_path = path + [adj]
+                        new_score = score + keep_score(new_path)
+                        heappush(frontier, (new_score, adj, new_path))
 
-                for dir in [left, right, up, down]:
-                    if not is_wall(dir) and dir not in path:
-                        scores.append(search(dir, path + [dir], score))
-
-                return min(scores)
-
-        return search(self._deer, [(self._deer[0], self._deer[1] - 1), self._deer], -1)
+        raise Exception("Could not find end!")
 
 
 def main():
