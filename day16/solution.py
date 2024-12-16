@@ -25,6 +25,11 @@ class Solution:
         for row in self._grid:
             print("".join(row))
 
+    def lowest_score(self) -> int:
+        score = 0
+
+        return score
+
 
 def main():
     pass

@@ -8,3 +8,9 @@ def test_ctor():
     assert len(solution._grid[0]) == 15
     assert solution._deer == (13, 1)
     assert solution._end == (1, 13)
+
+
+def test_lowest_score():
+    solution = Solution(filename="test_input.txt")
+    score = solution.lowest_score()
+    assert score == 7036
