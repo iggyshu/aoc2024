@@ -81,14 +81,18 @@ class Solution:
 
 
 def main():
-    solution = Solution(filename="input.txt", size=71, simulate=1024)
-    solution.print_grid([])
-    path = solution.shortest_path()
-    solution.print_grid(path)
-
-    print("PATH:")
-    print(path)
-    print(f"Shortest path length: {len(path) - 1}")
+    simulate = 3045
+    path = []
+    while simulate > 0:
+        print(f"simulate: {simulate}")
+        try:
+            solution = Solution(filename="input.txt", size=71, simulate=simulate)
+            path = solution.shortest_path()
+            break
+        except:
+            print("Failure!")
+            simulate -= 1
+    print(f"simulate: {simulate}")  # the answer is n+1 line in input.txt
 
 
 if __name__ == "__main__":
