@@ -46,8 +46,9 @@ class Solution:
         visited = set()
         goal = (len(self._grid) - 1, len(self._grid[0]) - 1)
 
-        while frontier:
+        while len(frontier) > 0:
             pos, path = frontier.popleft()
+            print(f"pos: {pos}")
 
             path.append(pos)
             visited.add(pos)
@@ -65,18 +66,29 @@ class Solution:
 
             for adj in adjacent:
                 if (
-                    in_bounds(adj)
-                    and not_corrupt(adj)
-                    and adj not in visited
-                    and adj not in frontier
+                    in_bounds(adj) and not_corrupt(adj) and adj not in visited
+                    # and adj not in frontier
                 ):
+                    visited.add(adj)
                     frontier.append((adj, list(path)))
+
+            print(f"frontier size: {len(frontier)}")
+            # print(f"visited: {visited}")
+            # print(f"frontier: {frontier}")
+            print()
 
         raise Exception("Could not find any path to goal!")
 
 
 def main():
-    pass
+    solution = Solution(filename="input.txt", size=71, simulate=1024)
+    solution.print_grid([])
+    path = solution.shortest_path()
+    solution.print_grid(path)
+
+    print("PATH:")
+    print(path)
+    print(f"Shortest path length: {len(path) - 1}")
 
 
 if __name__ == "__main__":
