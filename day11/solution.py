@@ -1,5 +1,6 @@
 from typing import List
 from functools import cache
+from collections import defaultdict
 
 
 def read_input(filename: str = "input.txt") -> List[int]:
@@ -22,23 +23,29 @@ def process_stone(value: int) -> List[int]:
         return [value * 2024]
 
 
-def blink(stones: List[int], times: int) -> List[int]:
-    S = stones
-    for i in range(times):
-        print(f"blink: {i}, stones: {len(S)}")
-        new_stones = []
-        for value in S:
-            new_stones.extend(process_stone(value))
-        S = new_stones
-        # if len(S) > 1000000: break up into batches, process each batch individually
-    return S
+def blink(stones: List[int], times: int) -> int:
+    prev = {}
+
+    for stone in stones:
+        prev[stone] = 1
+
+    curr = prev
+
+    for _ in range(times):
+        prev = defaultdict(int)
+        for stone, count in curr.items():
+            transition = process_stone(stone)
+            for T in transition:
+                prev[T] += count
+        curr = prev
+
+    return sum(curr.values())
 
 
 def main():
     res = 0
     stones = read_input()
-    for stone in stones:
-        res += len(blink([stone], 25))
+    res = blink(stones, 75)
     print(res)
 
 
