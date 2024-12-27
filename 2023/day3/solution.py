@@ -5,9 +5,13 @@ class Solution():
         self._grid = []
         self._symbols = set(list(punctuation))
         self._symbols.remove(".") # dot resembles blank space
+        self._gears = [] # gear coordinates
         with open(filename) as f:
-            for line in f:
+            for i, line in enumerate(f):
                 self._grid.append(list(line.rstrip("\n")))
+                for j, cell in enumerate(self._grid[-1]):
+                    if cell == "*":
+                        self._gears.append((i, j))
 
     def sum_of_all_the_part_numbers(self):
         engine_parts = []
