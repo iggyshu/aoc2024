@@ -1,4 +1,5 @@
-from typing import Tuple
+from collections import deque
+from typing import Tuple, Union
 from string import punctuation
 
 class Solution():
@@ -64,37 +65,71 @@ class Solution():
             up_right = (y - 1, x + 1)
             down_left = (y + 1, x - 1)
             down_right = (y + 1, y + 1)
-            adj_numbers = [
-                self.read_number(left)
-                self.read_number(right)
-            ]
+            adj_numbers = []
+
+            left_number = self.read_number(left)
+            if left_number is not None:
+                adj_numbers.append(left_number)
+
+            right_number = self.read_number(right)
+            if right_number is not None:
+                adj_numbers.append(right_number)
+
             down_number = self.read_number(down)
             up_number = self.read_number(up)
-            if not down_number:
-                down_left_number = self.read_number(down_left)
-                if down_left_number: adj_numbers.append(down_left_number)
-                down_right_number = self.read_number(down_right)
-                if down_right_number: adj_numbers.append(down_right_number)
-            if not up_number:
-                up_left_number = self.read_number(up_left)
-                if up_left_number: adj_numbers.append(up_left_number)
-                up_right_number = self.read_number(up_right)
-                if up_right_number: adj_numbers.append(up_right_number)
 
+            if down_number is not None:
+                adj_numbers.append(down_number)
+            else:
+                down_left_number = self.read_number(down_left)
+                if down_left_number is not None:
+                    adj_numbers.append(down_left_number)
+                down_right_number = self.read_number(down_right)
+                if down_right_number is not None:
+                    adj_numbers.append(down_right_number)
+
+            if up_number is not None:
+                adj_numbers.append(up_number)
+            else:
+                up_left_number = self.read_number(up_left)
+                if up_left_number is not None:
+                    adj_numbers.append(up_left_number)
+                up_right_number = self.read_number(up_right)
+                if up_right_number is not None:
+                    adj_numbers.append(up_right_number)
+
+            print(f"gear ({gear}), adj numbers: {adj_numbers}")
             if len(adj_numbers) == 2:
                 ratio = adj_numbers[0] * adj_numbers[1]
                 gear_ratios.append(ratio)
 
         return sum(gear_ratios)
 
-    def read_number(self, coordinates: Tuple[int, int]) -> int:
-        # TODO implement reading a number horizontally from a set of coordinates
+    def read_number(self, coordinates: Tuple[int, int]) -> Union[int, None]:
         Y, X = coordinates
+        if (Y < 0 or Y > len(self._grid)) or (X < 0 or X > len(self._grid[0])):
+            return None
+        if not self._grid[Y][X].isnumeric():
+            return None
+        chars = deque([self._grid[Y][X]])
+        left = X - 1
+        while left >= 0 and self._grid[Y][left].isnumeric():
+            chars.appendleft(self._grid[Y][left])
+            left -= 1
+        right = X + 1
+        while right < len(self._grid[0]) and self._grid[Y][right].isnumeric():
+            chars.append(self._grid[Y][right])
+            right += 1
+        print(f"chars: {''.join(chars)}")
+        return int("".join(chars))
+
 
 def main():
     sln = Solution()
-    res = sln.sum_of_all_the_part_numbers()
-    print(f"Sum of all engine part numbers: {res}")
+    part_numbers_sum = sln.sum_of_all_the_part_numbers()
+    print(f"Sum of all engine part numbers: {part_numbers_sum}")
+    gear_ratios_sum = sln.sum_of_all_the_part_numbers()
+    print(f"Sum of gear ratios: {gear_ratios_sum}")
 
 if __name__ == "__main__":
     main()
