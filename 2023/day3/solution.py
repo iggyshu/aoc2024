@@ -1,3 +1,4 @@
+from typing import Tuple
 from string import punctuation
 
 class Solution():
@@ -50,6 +51,45 @@ class Solution():
                 print(f"{self._grid[y][x]} is a symbol")
                 return True
         return False
+
+    def sum_of_gear_ratios(self):
+        gear_ratios = []
+        for gear in self._gears:
+            y, x = gear
+            left = (y, x - 1)
+            right = (y, x + 1)
+            down = (y + 1, x)
+            up = (y - 1, x)
+            up_left = (y - 1, x - 1)
+            up_right = (y - 1, x + 1)
+            down_left = (y + 1, x - 1)
+            down_right = (y + 1, y + 1)
+            adj_numbers = [
+                self.read_number(left)
+                self.read_number(right)
+            ]
+            down_number = self.read_number(down)
+            up_number = self.read_number(up)
+            if not down_number:
+                down_left_number = self.read_number(down_left)
+                if down_left_number: adj_numbers.append(down_left_number)
+                down_right_number = self.read_number(down_right)
+                if down_right_number: adj_numbers.append(down_right_number)
+            if not up_number:
+                up_left_number = self.read_number(up_left)
+                if up_left_number: adj_numbers.append(up_left_number)
+                up_right_number = self.read_number(up_right)
+                if up_right_number: adj_numbers.append(up_right_number)
+
+            if len(adj_numbers) == 2:
+                ratio = adj_numbers[0] * adj_numbers[1]
+                gear_ratios.append(ratio)
+
+        return sum(gear_ratios)
+
+    def read_number(self, coordinates: Tuple[int, int]) -> int:
+        # TODO implement reading a number horizontally from a set of coordinates
+        Y, X = coordinates
 
 def main():
     sln = Solution()
